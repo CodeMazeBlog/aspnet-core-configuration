@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace ProjectConfigurationDemo.Models
 {
-    public class LoggingLevelConfiguration
-    {
-        public string Default { get; set; }
-    }
+	public class LoggingLevelConfiguration
+	{
+		public string Default { get; set; }
+	}
 }
