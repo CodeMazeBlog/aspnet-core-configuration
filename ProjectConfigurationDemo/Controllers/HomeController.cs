@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjectConfigurationDemo.Models;
 
@@ -12,15 +13,26 @@ namespace ProjectConfigurationDemo.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var logLevelConfiguration = new LoggingLevelConfiguration();
+
+            _configuration.Bind("Logging:LogLevel", logLevelConfiguration);
+
+            var homeModel = new HomeModel
+            {
+                DefaultLogLevel = logLevelConfiguration.Default
+            };
+
+            return View(homeModel);
         }
 
         public IActionResult Privacy()
