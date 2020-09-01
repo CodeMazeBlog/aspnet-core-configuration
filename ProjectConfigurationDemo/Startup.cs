@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using ProjectConfigurationDemo.Models;
+using ProjectConfigurationDemo.Services;
 
 namespace ProjectConfigurationDemo
 {
@@ -23,6 +26,11 @@ namespace ProjectConfigurationDemo
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.Configure<TitleConfiguration>("HomePage", Configuration.GetSection("Pages:HomePage"));
+			services.Configure<TitleConfiguration>("ProductPage", Configuration.GetSection("Pages:ProductPage"));
+
+			services.TryAddSingleton<ITitleColorService, TitleColorService>();
+
 			services.AddControllersWithViews();
 		}
 

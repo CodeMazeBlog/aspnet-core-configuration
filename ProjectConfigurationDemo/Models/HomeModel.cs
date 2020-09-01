@@ -7,6 +7,6 @@ namespace ProjectConfigurationDemo.Models
 {
 	public class HomeModel
 	{
-		public string DefaultLogLevel { get; set; }
+		public TitleConfiguration Configuration { get; set; }
 	}
 }

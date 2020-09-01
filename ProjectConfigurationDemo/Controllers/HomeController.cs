@@ -6,31 +6,35 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ProjectConfigurationDemo.Models;
+using ProjectConfigurationDemo.Services;
 
 namespace ProjectConfigurationDemo.Controllers
 {
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
-		private readonly IConfiguration _configuration;
+		private readonly TitleConfiguration _homePageTitleConfiguration;
+		private readonly ITitleColorService _titleColorService;
 
-		public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
+		public HomeController(ILogger<HomeController> logger,
+			IOptionsSnapshot<TitleConfiguration> homePageTitleConfiguration,
+			ITitleColorService titleColorService)
 		{
 			_logger = logger;
-			_configuration = configuration;
+			_homePageTitleConfiguration = homePageTitleConfiguration.Get("HomePage");
+			_titleColorService = titleColorService;
 		}
 
 		public IActionResult Index()
 		{
-			var logLevelConfiguration = new LoggingLevelConfiguration();
-
-			_configuration.Bind("Logging:LogLevel", logLevelConfiguration);
-
 			var homeModel = new HomeModel
 			{
-				DefaultLogLevel = logLevelConfiguration.Default
+				Configuration = _homePageTitleConfiguration
 			};
+
+			homeModel.Configuration.Color = _titleColorService.GetTitleColor("HomePage");
 
 			return View(homeModel);
 		}

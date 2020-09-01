@@ -2,7 +2,10 @@
 	ViewData["Title"] = "Home Page";
 }
 <div class="text-center">
-	<h1 class="display-4">Welcome</h1>
-	<span>Our default logging level is </span><strong>@Model.DefaultLogLevel</strong>
-	<p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+	@{
+		if (Model.Configuration.ShowWelcomeMessage)
+		{
+			<h1 class="display-4" style="color:@Model.Configuration.Color">@Model.Configuration.WelcomeMessage</h1>
+		}
+	}
 </div>
