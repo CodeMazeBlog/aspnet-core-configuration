@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -27,12 +28,21 @@ namespace ProjectConfigurationDemo
 				})
 				.ConfigureAppConfiguration((hostingContext, configBuilder) =>
 				{
-					var config = configBuilder.Build();
+					var builtConfig = configBuilder.Build();
 
-					var configSource = new EFConfigurationSource(opts =>
-						opts.UseSqlServer(config.GetConnectionString("sqlConnection")));
+					using (var store = new X509Store(StoreLocation.CurrentUser))
+					{
+						store.Open(OpenFlags.ReadOnly);
+						var certs = store.Certificates
+							.Find(X509FindType.FindByThumbprint, builtConfig["Azure:CertificateThumb"], false);
 
-					configBuilder.Add(configSource);
+						configBuilder.AddAzureKeyVault(
+							builtConfig["Azure:KeyVault:DNS"],
+							builtConfig["Azure:ApplicationId"],
+							certs.OfType<X509Certificate2>().Single());
+
+						store.Close();
+					}
 				});
 	}
 }
