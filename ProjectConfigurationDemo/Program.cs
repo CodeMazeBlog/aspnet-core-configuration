@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ProjectConfigurationDemo.Models;
+using ProjectConfigurationDemo.Models.ConfigurationProviders;
 
 namespace ProjectConfigurationDemo
 {
@@ -22,12 +25,14 @@ namespace ProjectConfigurationDemo
 				{
 					webBuilder.UseStartup<Startup>();
 				})
-				.ConfigureAppConfiguration((hostingContext, config) =>
+				.ConfigureAppConfiguration((hostingContext, configBuilder) =>
 				{
-					var env = hostingContext.HostingEnvironment;
+					var config = configBuilder.Build();
 
-					config.AddIniFile("appsettings.ini", optional: true, reloadOnChange: true)
-						.AddIniFile($"appsettings.{env.EnvironmentName}.ini", optional: true, reloadOnChange: true);
+					var configSource = new EFConfigurationSource(opts =>
+						opts.UseSqlServer(config.GetConnectionString("sqlConnection")));
+
+					configBuilder.Add(configSource);
 				});
 	}
 }
