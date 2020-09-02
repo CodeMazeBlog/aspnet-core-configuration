@@ -10,22 +10,21 @@ namespace ProjectConfigurationDemo.Services
 	public class TitleColorService : ITitleColorService
 	{
 		private readonly string[] _colors = { "red", "green", "blue", "black", "purple", "yellow", "brown", "pink" };
-		private readonly IOptionsMonitor<TitleConfiguration> _titleConfiguration;
+		private readonly TitleConfiguration _titleConfiguration;
 
 		public TitleColorService(IOptionsMonitor<TitleConfiguration> titleConfiguration)
 		{
-			_titleConfiguration = titleConfiguration;
+			_titleConfiguration = titleConfiguration.CurrentValue;
 		}
 
-		public string GetTitleColor(string pageTitleConfiguration)
+		public string GetTitleColor()
 		{
 			var random = new Random();
 			var colorIndex = random.Next(7);
-			var titleConfiguration = _titleConfiguration.Get(pageTitleConfiguration);
 
-			return titleConfiguration.UseRandomTitleColor ?
+			return _titleConfiguration.UseRandomTitleColor ?
 				_colors[colorIndex] :
-				titleConfiguration.Color;
+				_titleConfiguration.Color;
 		}
 	}
 }

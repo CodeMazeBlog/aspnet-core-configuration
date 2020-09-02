@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using ProjectConfigurationDemo.ConfigurationValidation;
 using ProjectConfigurationDemo.Models;
 using ProjectConfigurationDemo.Services;
 
@@ -26,8 +28,9 @@ namespace ProjectConfigurationDemo
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.Configure<TitleConfiguration>("HomePage", Configuration.GetSection("Pages:HomePage"));
-			services.Configure<TitleConfiguration>("ProductPage", Configuration.GetSection("Pages:ProductPage"));
+			services.Configure<TitleConfiguration>(Configuration.GetSection("Pages:HomePage"));
+			
+			services.TryAddSingleton<IValidateOptions<TitleConfiguration>, TitleConfigurationValidation>();
 
 			services.TryAddSingleton<ITitleColorService, TitleColorService>();
 

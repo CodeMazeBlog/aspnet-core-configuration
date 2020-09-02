@@ -23,7 +23,7 @@ namespace ProjectConfigurationDemo.Controllers
 			ITitleColorService titleColorService)
 		{
 			_logger = logger;
-			_homePageTitleConfiguration = homePageTitleConfiguration.Get("HomePage");
+			_homePageTitleConfiguration = homePageTitleConfiguration.Value;
 			_titleColorService = titleColorService;
 		}
 
@@ -34,7 +34,7 @@ namespace ProjectConfigurationDemo.Controllers
 				Configuration = _homePageTitleConfiguration
 			};
 
-			homeModel.Configuration.Color = _titleColorService.GetTitleColor("HomePage");
+			homeModel.Configuration.Color = _titleColorService.GetTitleColor();
 
 			return View(homeModel);
 		}
