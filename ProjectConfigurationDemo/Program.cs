@@ -21,6 +21,13 @@ namespace ProjectConfigurationDemo
 				.ConfigureWebHostDefaults(webBuilder =>
 				{
 					webBuilder.UseStartup<Startup>();
+				})
+				.ConfigureAppConfiguration((hostingContext, config) =>
+				{
+					var env = hostingContext.HostingEnvironment;
+
+					config.AddIniFile("appsettings.ini", optional: true, reloadOnChange: true)
+						.AddIniFile($"appsettings.{env.EnvironmentName}.ini", optional: true, reloadOnChange: true);
 				});
 	}
 }
